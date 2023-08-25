@@ -3,15 +3,15 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar, useIonRouter } from '@ionic/react';
 import { logOutOutline } from 'ionicons/icons';
+import { AuthCtx } from '../../contexts/AuthCtx';
 
 export const LogoutPage: React.FC = () => {
-    const authCtx = useContext(AuthContext)
+    const authCtx = useContext(AuthCtx)
     const router = useIonRouter()
 
     useEffect(() => {
         localStorage.clear()
-        authCtx?.setUser(undefined)
-        router.push("/login")
+        authCtx?.setUser(null)
     }, [])
 
     return (

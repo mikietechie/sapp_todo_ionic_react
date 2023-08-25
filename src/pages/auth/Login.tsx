@@ -1,31 +1,43 @@
 
-import { IonButton, IonCard, IonCardContent,  IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import axios from 'axios';
-import { checkmarkDoneCircleOutline, logInOutline, personAddOutline } from 'ionicons/icons';
-import { FormEvent, useContext, useRef, useState } from 'react';
+import { checkmarkDoneCircleOutline, logInOutline, logOutOutline, personAddOutline } from 'ionicons/icons';
+import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
 import "./auth.scss"
-import { AuthContext } from '../../contexts/AuthContext';
 import { serverURL } from '../../data/common';
+import { AuthCtx } from '../../contexts/AuthCtx';
 
 export const LoginPage: React.FC = () => {
     const usernameRef = useRef<HTMLIonInputElement>(null)
     const passwordRef = useRef<HTMLIonInputElement>(null)
     const [detail, setDetail] = useState("")
-    const authCtx = useContext(AuthContext)
+    const authCtx = useContext(AuthCtx)
     const router = useIonRouter()
 
-    useIonViewWillEnter(() => {
-
-    })
+    useEffect(() => {
+        if (authCtx?.user) {
+            router.push("/todo/home")
+        }
+    }, [authCtx?.user])
 
     const submitForm = async (e: FormEvent) => {
         e.preventDefault()
         try {
             const payload = { username: usernameRef.current?.value, password: passwordRef.current?.value }
-            const res = await axios.post(`${serverURL}auth/api/login/`, payload)
-            authCtx?.setToken(res.data)
-            await authCtx?.loadUser()
-            router.push("/todo")
+            const lres = await axios.post(`${serverURL}auth/api/login/`, payload)
+            if (lres.status === 200) {
+                const ures = await axios.get(`${serverURL}auth/api/session/`, {
+                    headers: {
+                        Authorization: `Bearer ${lres.data.access}`
+                    }
+                })
+                if (ures.status === 200) {
+                    const user = ures.data
+                    user.tokens = lres.data
+                    localStorage.setItem('user', JSON.stringify(user))
+                    authCtx?.setUser(user)
+                }
+            }
         } catch (error: any) {
             console.log(error);
             setDetail(error?.response?.data?.detail || "An Error Occured")
@@ -69,16 +81,14 @@ export const LoginPage: React.FC = () => {
                                         <IonItem className="ion-margin-vertical">
                                             <IonInput type='password' label='Password *' minlength={2} labelPlacement='stacked' ref={passwordRef} autocomplete='current-password' required={true} />
                                         </IonItem>
-                                        <IonItem className="item-lines-none">
-                                            <p>
-                                                <IonButton type='submit' expand='block' className="ion-margin-vertical">
-                                                    <IonIcon icon={logInOutline} slot='start' />&nbsp;Login
-                                                </IonButton>
-                                                <IonButton expand='block' fill='clear' routerLink='/register'>
-                                                    <IonIcon icon={personAddOutline} slot='start' />&nbsp;Register
-                                                </IonButton>
-                                            </p>
-                                        </IonItem>
+                                        <p>
+                                            <IonButton type='submit' expand='block' className="ion-margin-vertical">
+                                                <IonIcon icon={logInOutline} slot='start' />&nbsp;Login
+                                            </IonButton>
+                                            <IonButton expand='block' fill='clear' className="" routerLink='/register'>
+                                                <IonIcon icon={personAddOutline} slot='start' />&nbsp;Register
+                                            </IonButton>
+                                        </p>
                                     </form>
                                 </IonCardContent>
                             </IonCard>

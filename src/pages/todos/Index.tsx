@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, useIonRouter } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Route, Redirect } from 'react-router';
+import { Route, Redirect } from 'react-router-dom';
 import { search, homeOutline, listOutline, libraryOutline, starOutline } from 'ionicons/icons';
 
 import { LandingPage } from './Landing';
@@ -11,16 +11,15 @@ import { HistoryPage } from './History';
 import { SearchPage } from './Search';
 import { ImportantPage } from './Important';
 import { SettingsPage } from './Settings';
-import { AuthContext } from '../../contexts/AuthContext';
+import { AuthCtx } from '../../contexts/AuthCtx';
 
 export const TodoIndexPage: React.FC = () => {
+    const authCtx = useContext(AuthCtx)
     const router = useIonRouter()
-    const authCtx = useContext(AuthContext)
 
     useEffect(() => {
-        // if (!authCtx?.user) {
-        //     router.push("/login")
-        // }
+        console.log(authCtx?.user)
+        console.log({localStorage})
     }, [])
 
     return (
@@ -30,11 +29,12 @@ export const TodoIndexPage: React.FC = () => {
                     <Redirect exact path="/todo" to="/todo/home" />
                     <Route path="/todo/home" render={() => <LandingPage />} exact={true} />
                     <Route path="/todo/list/:listID" render={() => <ListPage />} />
-                    <Route path="/todo/lists" render={() => <ListsPage />} exact={true} />
+                    <Route path="/todo/lists" render={() => <ListsPage  />} exact={true} />
                     <Route path="/todo/history" render={() => <HistoryPage />} exact={true} />
                     <Route path="/todo/search" render={() => <SearchPage />} exact={true} />
                     <Route path="/todo/important" render={() => <ImportantPage />} exact={true} />
                     <Route path="/todo/settings" render={() => <SettingsPage />} exact={true} />
+                    <Route render={() => <Redirect to="/todo/home" />} exact={true} />
                 </IonRouterOutlet>
 
                 <IonTabBar slot="bottom">

@@ -36,7 +36,7 @@ export const ListForm: React.FC<{listsUpdated: () => void}> = ({listsUpdated}) =
                 <div slot="start" style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                     <IonIcon slot="start" icon={addCircle} color="primary" />
                 </div>
-                <IonInput label="List name" defaultValue={name} labelPlacement="floating" clearInput={true} minlength={3} onIonInput={(e) => setName(e.target.value as never as string)}/>
+                <IonInput label="List name" value={name} labelPlacement="floating" clearInput={true} minlength={3} onIonInput={(e) => setName(e.target.value as never as string)}/>
         </IonItem>
         </form>
         </>

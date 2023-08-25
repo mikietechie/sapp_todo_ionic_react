@@ -1,8 +1,6 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact, useIonRouter, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
+import { Redirect, Route, useHistory } from 'react-router-dom';
+import { IonApp, IonRouterOutlet, setupIonicReact, useIonRouter } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
-import ViewMessage from './pages/ViewMessage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -23,71 +21,37 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { TodoIndexPage } from './pages/todos/Index';
-import { useEffect, useState } from 'react';
-import { AuthContext, AuthContextType } from './contexts/AuthContext'
+import { useEffect, useRef, useState } from 'react';
 import { LoginPage } from './pages/auth/Login';
 import { RegisterPage } from './pages/auth/Register';
-import { IToken, IUser, getSessionUser } from './data/auth';
-import { AxiosRequestConfig } from 'axios';
 import { LogoutPage } from './pages/auth/Logout';
+import { TestPage } from './pages/Test';
+import { AuthCtx, IAuthCTXUser } from './contexts/AuthCtx';
 
 setupIonicReact();
 
 const App: React.FC = () => {
-    const [token, _setToken] = useState<IToken>()
-    const [user, _setUser] = useState<IUser>()
-    const [headers, _setHeaders] = useState<AxiosRequestConfig>()
-    const router = useIonRouter()
+    const [user, setUser] = useState<IAuthCTXUser | null>(null)
 
     useEffect(() => {
-        loadTokenUser()
+        const storedUser = localStorage.getItem('user')
+        if (storedUser) {
+            setUser(JSON.parse(storedUser))
+        }
     }, [])
 
-    const loadTokenUser = async () => {
-        const storedToken = localStorage.getItem("token")
-        if (storedToken) {
-            try {
-                await loadUser()
-                setToken(JSON.parse(localStorage.getItem("token")!))
-                router.push("/todo")
-            } catch (error) {
-                console.error(error)
-            }
+    useEffect(() => {
+        console.log(`user changed ${user?.username}`);
+        if (!user) {
         }
-    }
-
-    const loadUser = async () => {
-        setUser(await getSessionUser())
-    }
-
-    const clearToken = () => {
-        localStorage.removeItem("token")
-        _setHeaders({})
-        _setToken(undefined)
-    }
-
-    const setToken = (o: IToken | undefined) => {
-        localStorage.setItem("token", JSON.stringify(o))
-        setHeaders({ headers: { Authorization: `Bearer ${o?.access}` } })
-        _setToken(o)
-    }
-
-    const setUser = (o: IUser|undefined) => {
-        localStorage.setItem("user", JSON.stringify(o))
-        _setUser(o)
-    }
-
-    const setHeaders = (o: AxiosRequestConfig|undefined) => {
-        localStorage.setItem("headers", JSON.stringify(o))
-        _setHeaders(o)
-    }
+    }, [user])
 
 
     return (
         <IonApp>
             <IonReactRouter>
-                <IonRouterOutlet>
-                    <AuthContext.Provider value={{ token, user, setToken, setUser, loadUser, clearToken }}>
+                <AuthCtx.Provider value={{ setUser, user }}>
+                    <IonRouterOutlet>
                         <Route path="/" exact={true}>
                             <Redirect to="/login" />
                         </Route>
@@ -100,17 +64,15 @@ const App: React.FC = () => {
                         <Route path="/register" exact={true}>
                             <RegisterPage />
                         </Route>
-                        <Route path="/home" exact={true}>
-                            <Home />
+                        <Route path="/test" exact={true}>
+                            <TestPage />
                         </Route>
-                        <Route path="/todo">
+                        <Route path={user ? "/todo" : "hidden-forever"}>
                             <TodoIndexPage />
                         </Route>
-                        <Route path="/message/:id">
-                            <ViewMessage />
-                        </Route>
-                    </AuthContext.Provider>
-                </IonRouterOutlet>
+                        <Route render={() => <Redirect to="/login" />}></Route>
+                    </IonRouterOutlet>
+                </AuthCtx.Provider>
             </IonReactRouter>
         </IonApp >
     )
