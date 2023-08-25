@@ -1,0 +1,22 @@
+.auth-page {
+    ion-content {
+        --background: var(--ion-color-primary);
+        // --background-image: url("../../../public/todonotebook.jpeg");
+        // --background-position: center;
+        // --background-size: cover;
+        .heading {
+            h1 {
+                &,* {
+                    color: var(--ion-color-primary);
+                    vertical-align: middle;
+                }
+                ion-icon {
+                    display: inline-block;
+                }
+            }
+            ion-note {
+                font-style: italic;
+            }
+        }
+    }
+}
