@@ -52,7 +52,7 @@ export const LoginPage: React.FC<{setPage: (p: "login" | "register") => void}> =
             <IonContent className="ion-padding">
                 <IonGrid>
                     <IonRow className='ion-padding-top'>
-                        <IonCol sizeMd='4' offsetMd='4' sizeLg='4' offsetLg='3' sizeXl='3'>
+                        <IonCol sizeMd='6' offsetMd='2' sizeLg='5' offsetLg='2' sizeXl='4'>
                             <IonCard>
                                 <IonCardContent>
                                     <IonItem className="item-lines-none heading">
@@ -85,9 +85,9 @@ export const LoginPage: React.FC<{setPage: (p: "login" | "register") => void}> =
                                             </IonButton>
                                         </p>
                                     </form>
-                                    <pre>
+                                    {/* <pre>
                                         {JSON.stringify(error, null, 2)}
-                                    </pre>
+                                    </pre> */}
                                 </IonCardContent>
                             </IonCard>
                         </IonCol>

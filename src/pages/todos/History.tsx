@@ -25,7 +25,7 @@ export const HistoryPage: React.FC<{}> = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot="start">
-                        <IonBackButton defaultHref="/todo/home"></IonBackButton>
+                        <IonBackButton defaultHref="/home"></IonBackButton>
                     </IonButtons>
                     <IonTitle>
                         <IonIcon icon={libraryOutline} className="ion-align-self-center" />&nbsp;

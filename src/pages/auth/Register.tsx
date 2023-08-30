@@ -1,5 +1,5 @@
 
-import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar, useIonAlert, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import axios from 'axios';
 import { checkmarkDoneCircleOutline, logInOutline, logOutOutline, personAddOutline } from 'ionicons/icons';
 import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
@@ -12,24 +12,20 @@ export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}
     const passwordRef = useRef<HTMLIonInputElement>(null)
     const [detail, setDetail] = useState("")
     const authCtx = useContext(AuthCtx)
-    const router = useIonRouter()
-    const [formErrors, setFormErrors] = useState<{}[]>([])
-
-    useEffect(() => {
-        if (authCtx?.user) {
-            router.push("/todo/home")
-        }
-    }, [authCtx?.user])
+    const [presentAlert] = useIonAlert()
+    // const [formErrors, setFormErrors] = useState<{}[]>([])
 
     const submitForm = async (e: FormEvent) => {
         e.preventDefault()
         setDetail("")
+        const [username, password] = [usernameRef.current?.value, passwordRef.current?.value]
         try {
-            const payload = { username: usernameRef.current?.value, password: passwordRef.current?.value, password_confirmation: passwordRef.current?.value }
+            const payload = { username, password, password_confirmation: password }
             const lres = await axios.post(`${serverURL}/auth/api/register/`, payload)
             if (lres.status === 200) {
                 if ( lres.data?.id) {
                     const user = lres.data
+                    presentAlert({header: "Welcome Pal :)", message: `Hey ${username} good to have you, please proceed to login!`, buttons: ["Ok, Cool!"]})
                     setPage("login")
                     // localStorage.setItem('user', JSON.stringify(user))
                     // authCtx?.setUser(user)
@@ -44,8 +40,8 @@ export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}
                 }
             }
         } catch (error: any) {
-            console.log(error);
-            setDetail(error?.response?.data?.detail || "An Error Occured")
+            // console.log(error);
+            // setDetail(error?.response?.data?.detail || "An Error Occured")
         }
     }
 
@@ -72,7 +68,7 @@ export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}
                                                 SAPP To Do
                                             </h1>
                                             <p className="ion-text-center">
-                                                <IonNote>Welcome, Buddy {authCtx?.user?.username} :)</IonNote>
+                                                <IonNote>Good to have you :)</IonNote>
                                             </p>
                                         </IonLabel>
                                     </IonItem>

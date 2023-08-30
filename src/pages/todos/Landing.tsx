@@ -1,9 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { IItem, IList, getDefaultList, getSortedItems } from "../../data/todos"
-import { IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, useIonRouter } from "@ionic/react"
+import { IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, useIonAlert, useIonRouter } from "@ionic/react"
 import { Item, ItemForm } from "./Items"
 import { libraryOutline, logOutOutline, searchOutline, settingsOutline, starOutline, sunnyOutline } from "ionicons/icons"
 import { AuthCtx } from "../../contexts/AuthCtx"
+import { apiUrl, getAxiosConf } from "../../data/common"
+import axios from "axios"
 
 
 export const LandingPage: React.FC<{}> = ({ }) => {
@@ -14,7 +16,9 @@ export const LandingPage: React.FC<{}> = ({ }) => {
     const authCtx = useContext(AuthCtx)
 
     useEffect(() => {
-        getDefaultList().then((o) => setDefaultList(o))
+        getDefaultList().then((o) => {
+            setDefaultList(o)
+        })
     }, [])
 
     useEffect(() => {

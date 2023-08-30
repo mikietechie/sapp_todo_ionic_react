@@ -7,7 +7,7 @@ import { apiUrl, getAxiosConf } from "../../data/common";
 
 export const List: React.FC<{list: IList}> = ({list}) => {
     return (
-        <IonItem routerLink={`/todo/list/${list.id}`}>
+        <IonItem routerLink={`/list/${list.id}`}>
             <IonIcon slot="start" icon={listCircle} />
             <IonLabel className="ion-text-wrap">
                 <h2>{list.name}</h2>
@@ -36,7 +36,7 @@ export const ListForm: React.FC<{listsUpdated: () => void}> = ({listsUpdated}) =
                 <div slot="start" style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                     <IonIcon slot="start" icon={addCircle} color="primary" />
                 </div>
-                <IonInput label="List name" value={name} labelPlacement="floating" clearInput={true} minlength={3} onIonInput={(e) => setName(e.target.value as never as string)}/>
+                <IonInput label="List name" value={name} labelPlacement="floating" clearInput={true} minlength={3} maxlength={8} onIonInput={(e) => setName(e.target.value as never as string)}/>
         </IonItem>
         </form>
         </>
@@ -63,7 +63,7 @@ export const ListsPage: React.FC<{}> = () => {
         <IonHeader>
             <IonToolbar>
                 <IonButtons slot="start">
-                    <IonBackButton defaultHref="/todo/home"></IonBackButton>
+                    <IonBackButton defaultHref="/home"></IonBackButton>
                 </IonButtons>
                 <IonTitle>
                     <IonIcon icon={listOutline} className="ion-align-self-center" />&nbsp;

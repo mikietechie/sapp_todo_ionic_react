@@ -34,7 +34,7 @@ export const ImportantPage: React.FC<{}> = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot="start">
-                        <IonBackButton defaultHref="/todo/home"></IonBackButton>
+                        <IonBackButton defaultHref="/home"></IonBackButton>
                     </IonButtons>
                     <IonTitle>
                         <IonIcon icon={starOutline} className="ion-align-self-center" />&nbsp;

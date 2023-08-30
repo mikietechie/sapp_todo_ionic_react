@@ -28,10 +28,17 @@ export interface IItem {
     edit_timestamp: string;
     details: string | null;
 }
-
+// axios.post(`${apiUrl}add/sapp_todo/list/`, {name: "Main List", default: true}, getAxiosConf())
 export const getLists = async () => (await axios.get(`${apiUrl}list/sapp_todo/list/`, getAxiosConf())).data.page as IList[]
 export const getList = async (id: number|string) => ((await axios.get(`${apiUrl}detail/sapp_todo/list/${id}/`, getAxiosConf())).data as {instance: IList})
-export const getDefaultList = async () => ((await axios.get(`${apiUrl}list/sapp_todo/list/?default=True&submit=Apply`, getAxiosConf())).data.page as IList[]).at(0)
+export const getDefaultList = async (): Promise<IList> => {
+    const defaultList = ((await axios.get(`${apiUrl}list/sapp_todo/list/?default=True&submit=Apply`, getAxiosConf())).data.page as IList[]).at(0)
+    if (!defaultList) {
+        await axios.post(`${apiUrl}add/sapp_todo/list/`, {name: "First", default: true}, getAxiosConf())
+        return await getDefaultList()
+    }
+    return defaultList
+}
 export const getItems = async (qs: string = "") => (await axios.get(`${apiUrl}list/sapp_todo/item/${qs}`, getAxiosConf())).data.page as IItem[]
 export const getSortedItems = async (qs: string = "") => sortBy(await (await axios.get(`${apiUrl}list/sapp_todo/item/${qs}`, getAxiosConf())).data.page as IItem[], "edit_timestamp", -1)
 export const updateAttr = async (model: string, id: string|number, attr: string, value: any) => (await axios.post(`${apiUrl}method/sapp_todo/${model}/update_attr/`, {id, attr, value}, getAxiosConf())).data

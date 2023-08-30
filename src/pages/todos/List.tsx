@@ -35,7 +35,7 @@ export const ListPage: React.FC<{}> = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot="start">
-                        <IonBackButton defaultHref="/todo/lists"></IonBackButton>
+                        <IonBackButton defaultHref="/lists"></IonBackButton>
                     </IonButtons>
                     <IonTitle>
                         <IonIcon icon={listOutline} className="ion-align-self-center" />&nbsp;
