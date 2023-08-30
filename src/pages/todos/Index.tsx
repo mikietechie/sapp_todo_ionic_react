@@ -26,40 +26,40 @@ export const TodoIndexPage: React.FC = () => {
         <IonReactRouter>
             <IonTabs>
                 <IonRouterOutlet>
-                    <Redirect exact path="/todo" to="/todo/home" />
-                    <Route path="/todo/home" render={() => <LandingPage />} exact={true} />
-                    <Route path="/todo/list/:listID" render={() => <ListPage />} />
-                    <Route path="/todo/lists" render={() => <ListsPage  />} exact={true} />
-                    <Route path="/todo/history" render={() => <HistoryPage />} exact={true} />
-                    <Route path="/todo/search" render={() => <SearchPage />} exact={true} />
-                    <Route path="/todo/important" render={() => <ImportantPage />} exact={true} />
-                    <Route path="/todo/settings" render={() => <SettingsPage />} exact={true} />
-                    <Route render={() => <Redirect to="/todo/home" />} exact={true} />
+                    <Redirect exact path="" to="/home" />
+                    <Route path="/home" render={() => <LandingPage />} exact={true} />
+                    <Route path="/list/:listID" render={() => <ListPage />} />
+                    <Route path="/lists" render={() => <ListsPage  />} exact={true} />
+                    <Route path="/history" render={() => <HistoryPage />} exact={true} />
+                    <Route path="/search" render={() => <SearchPage />} exact={true} />
+                    <Route path="/important" render={() => <ImportantPage />} exact={true} />
+                    <Route path="/settings" render={() => <SettingsPage />} exact={true} />
+                    <Route render={() => <Redirect to="/home" />} exact={true} />
                 </IonRouterOutlet>
 
                 <IonTabBar slot="bottom">
 
-                    <IonTabButton tab="lists" href="/todo/lists">
+                    <IonTabButton tab="lists" href="/lists">
                         <IonIcon icon={listOutline} />
                         <IonLabel>Lists</IonLabel>
                     </IonTabButton>
 
-                    <IonTabButton tab="search" href="/todo/search">
+                    <IonTabButton tab="search" href="/search">
                         <IonIcon icon={search} />
                         <IonLabel>Search</IonLabel>
                     </IonTabButton>
 
-                    <IonTabButton tab="home" href="/todo/home">
+                    <IonTabButton tab="home" href="/home">
                         <IonIcon icon={homeOutline} />
                         <IonLabel><b style={{fontSize: "larger"}}>Home</b></IonLabel>
                     </IonTabButton>
 
-                    <IonTabButton tab="important" href="/todo/important">
+                    <IonTabButton tab="important" href="/important">
                         <IonIcon icon={starOutline} />
                         <IonLabel>Important</IonLabel>
                     </IonTabButton>
 
-                    <IonTabButton tab="history" href="/todo/history">
+                    <IonTabButton tab="history" href="/history">
                         <IonIcon icon={libraryOutline} />
                         <IonLabel>History</IonLabel>
                     </IonTabButton>

@@ -7,7 +7,7 @@ import "./auth.scss"
 import { serverURL } from '../../data/common';
 import { AuthCtx } from '../../contexts/AuthCtx';
 
-export const RegisterPage: React.FC = () => {
+export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}> = ({setPage}) => {
     const usernameRef = useRef<HTMLIonInputElement>(null)
     const passwordRef = useRef<HTMLIonInputElement>(null)
     const [detail, setDetail] = useState("")
@@ -30,8 +30,9 @@ export const RegisterPage: React.FC = () => {
             if (lres.status === 200) {
                 if ( lres.data?.id) {
                     const user = lres.data
-                    localStorage.setItem('user', JSON.stringify(user))
-                    authCtx?.setUser(user)
+                    setPage("login")
+                    // localStorage.setItem('user', JSON.stringify(user))
+                    // authCtx?.setUser(user)
                 } else if (lres.data?.form?.errors) {
                     let errorsStr = ""
                     Object.entries(lres.data?.form?.errors).forEach(([field, errors]) => {
@@ -89,7 +90,7 @@ export const RegisterPage: React.FC = () => {
                                             <IonButton type='submit' expand='block' className="ion-margin-vertical">
                                                 <IonIcon icon={personAddOutline} slot='start' />&nbsp;Register
                                             </IonButton>
-                                            <IonButton expand='block' fill='clear' className="" routerLink='/login'>
+                                            <IonButton expand='block' fill='clear' className="" onClick={() => setPage("login")}>
                                                 <IonIcon icon={logInOutline} slot='start' />&nbsp;Login
                                             </IonButton>
                                         </p>

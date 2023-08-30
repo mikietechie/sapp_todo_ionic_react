@@ -21,12 +21,9 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { TodoIndexPage } from './pages/todos/Index';
-import { useEffect, useRef, useState } from 'react';
-import { LoginPage } from './pages/auth/Login';
-import { RegisterPage } from './pages/auth/Register';
-import { LogoutPage } from './pages/auth/Logout';
-import { TestPage } from './pages/Test';
+import { useEffect, useState } from 'react';
 import { AuthCtx, IAuthCTXUser } from './contexts/AuthCtx';
+import { AuthPage } from './pages/auth/auth';
 
 setupIonicReact();
 
@@ -51,27 +48,12 @@ const App: React.FC = () => {
         <IonApp>
             <IonReactRouter>
                 <AuthCtx.Provider value={{ setUser, user }}>
-                    <IonRouterOutlet>
-                        <Route path="/" exact={true}>
-                            <Redirect to="/login" />
-                        </Route>
-                        <Route path="/login" exact={true}>
-                            <LoginPage />
-                        </Route>
-                        <Route path="/logout" exact={true}>
-                            <LogoutPage />
-                        </Route>
-                        <Route path="/register" exact={true}>
-                            <RegisterPage />
-                        </Route>
-                        <Route path="/test" exact={true}>
-                            <TestPage />
-                        </Route>
-                        <Route path={user ? "/todo" : "hidden-forever"}>
-                            <TodoIndexPage />
-                        </Route>
-                        <Route render={() => <Redirect to="/login" />}></Route>
-                    </IonRouterOutlet>
+                    <div>
+                    {
+                        !user ? <AuthPage /> : <TodoIndexPage />
+
+                    }
+                    </div>
                 </AuthCtx.Provider>
             </IonReactRouter>
         </IonApp >

@@ -1,24 +1,18 @@
 
-import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import axios from 'axios';
-import { checkmarkDoneCircleOutline, logInOutline, logOutOutline, personAddOutline } from 'ionicons/icons';
-import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
+import { checkmarkDoneCircleOutline, logInOutline, personAddOutline } from 'ionicons/icons';
+import { FormEvent, useContext, useRef, useState } from 'react';
 import "./auth.scss"
 import { serverURL } from '../../data/common';
 import { AuthCtx } from '../../contexts/AuthCtx';
 
-export const LoginPage: React.FC = () => {
+export const LoginPage: React.FC<{setPage: (p: "login" | "register") => void}> = ({setPage}) => {
     const usernameRef = useRef<HTMLIonInputElement>(null)
     const passwordRef = useRef<HTMLIonInputElement>(null)
+    const [error, setError] = useState("")
     const [detail, setDetail] = useState("")
     const authCtx = useContext(AuthCtx)
-    const router = useIonRouter()
-
-    useEffect(() => {
-        if (authCtx?.user) {
-            router.push("/todo/home")
-        }
-    }, [authCtx?.user])
 
     const submitForm = async (e: FormEvent) => {
         e.preventDefault()
@@ -40,6 +34,7 @@ export const LoginPage: React.FC = () => {
             }
         } catch (error: any) {
             console.log(error);
+            setError(error)
             setDetail(error?.response?.data?.detail || "An Error Occured")
         }
     }
@@ -85,11 +80,14 @@ export const LoginPage: React.FC = () => {
                                             <IonButton type='submit' expand='block' className="ion-margin-vertical">
                                                 <IonIcon icon={logInOutline} slot='start' />&nbsp;Login
                                             </IonButton>
-                                            <IonButton expand='block' fill='clear' className="" routerLink='/register'>
+                                            <IonButton expand='block' fill='clear' className="" onClick={() => setPage("register")}>
                                                 <IonIcon icon={personAddOutline} slot='start' />&nbsp;Register
                                             </IonButton>
                                         </p>
                                     </form>
+                                    <pre>
+                                        {JSON.stringify(error, null, 2)}
+                                    </pre>
                                 </IonCardContent>
                             </IonCard>
                         </IonCol>

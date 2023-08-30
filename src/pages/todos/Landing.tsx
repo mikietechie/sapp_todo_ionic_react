@@ -57,16 +57,16 @@ export const LandingPage: React.FC<{}> = ({ }) => {
                         <IonDatetime id="datetime" presentation="date" onIonChange={(e) => setDateFromPicker(e.target.value)}></IonDatetime>
                     </IonModal>
                     <IonButtons className="ion-justify-content-center">
-                        <IonButton fill="clear" size="small" routerLink="/todo/search">
+                        <IonButton fill="clear" size="small" routerLink="/search">
                             <IonIcon icon={searchOutline} />
                         </IonButton>
-                        <IonButton fill="clear" size="small" routerLink="/todo/history">
+                        <IonButton fill="clear" size="small" routerLink="/history">
                             <IonIcon icon={libraryOutline} />
                         </IonButton>
-                        <IonButton fill="clear" size="small" routerLink="/todo/important">
+                        <IonButton fill="clear" size="small" routerLink="/important">
                             <IonIcon icon={starOutline} />
                         </IonButton>
-                        <IonButton fill="clear" size="small" routerLink="/todo/settings">
+                        <IonButton fill="clear" size="small" routerLink="/settings">
                             <IonIcon icon={settingsOutline} />
                         </IonButton>
                         <IonButton fill="clear" size="small" onClick={logout} >
