@@ -1,5 +1,5 @@
 
-import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar, useIonAlert, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar, useIonAlert, useIonRouter, useIonToast, useIonViewWillEnter } from '@ionic/react';
 import axios from 'axios';
 import { checkmarkDoneCircleOutline, logInOutline, logOutOutline, personAddOutline } from 'ionicons/icons';
 import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
@@ -12,7 +12,7 @@ export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}
     const passwordRef = useRef<HTMLIonInputElement>(null)
     const [detail, setDetail] = useState("")
     const authCtx = useContext(AuthCtx)
-    const [presentAlert] = useIonAlert()
+    const [presentToast] = useIonToast()
     // const [formErrors, setFormErrors] = useState<{}[]>([])
 
     const submitForm = async (e: FormEvent) => {
@@ -24,8 +24,7 @@ export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}
             const lres = await axios.post(`${serverURL}/auth/api/register/`, payload)
             if (lres.status === 200) {
                 if ( lres.data?.id) {
-                    const user = lres.data
-                    presentAlert({header: "Welcome Pal :)", message: `Hey ${username} good to have you, please proceed to login!`, buttons: ["Ok, Cool!"]})
+                    presentToast({message: `Hey ${username} good to have you, please proceed to login!`, duration: 1500, position: "bottom", buttons: ["Ok, Cool!"]})
                     setPage("login")
                     // localStorage.setItem('user', JSON.stringify(user))
                     // authCtx?.setUser(user)

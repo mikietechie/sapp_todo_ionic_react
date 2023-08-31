@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { IItem, getSortedItems } from "../../data/todos"
 import axios from "axios"
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonList,  IonSelect, IonSelectOption, IonTitle, IonToolbar } from "@ionic/react"
+import { IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonList,  IonRow,  IonSelect, IonSelectOption, IonTitle, IonToolbar } from "@ionic/react"
 import { Item } from "./Items"
 import { filterOutline, searchOutline } from "ionicons/icons"
 
@@ -38,20 +38,28 @@ export const SearchPage: React.FC<{}> = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-                <form onSubmit={submitFilters}>
-                    <IonItem>
-                        <IonSelect label="Searched By" labelPlacement="floating" interface="popover" value={filterBy} onIonChange={(e) => setFilterBy(e.target.value)}>
-                            {
-                                filterByOptions.map((v) => <IonSelectOption key={v} value={v}>{fmtFilterBy(v)}</IonSelectOption>)
-                            }
-                        </IonSelect>
-                    </IonItem>
-                    <IonItem>
-                        <IonInput label={`ITEM ${fmtFilterBy(filterBy)}`} minlength={3} labelPlacement="floating"  onIonChange={(e) => setFilterValue(e.target.value)} />
-                    </IonItem>
+                <form onSubmit={submitFilters} className="ion-margin-bottom">
+                    <IonGrid>
+                        <IonRow>
+                            <IonCol sizeMd="4" size="12">
+                                <IonItem>
+                                    <IonSelect label="Filter by" labelPlacement="floating" interface="popover" value={filterBy} onIonChange={(e) => setFilterBy(e.target.value)}>
+                                        {
+                                            filterByOptions.map((v) => <IonSelectOption key={v} value={v}>{fmtFilterBy(v)}</IonSelectOption>)
+                                        }
+                                    </IonSelect>
+                                </IonItem>
+                            </IonCol>
+                            <IonCol sizeMd="8" size="12">
+                                <IonItem>
+                                    <IonInput label={`ITEM ${fmtFilterBy(filterBy)}`} minlength={3} labelPlacement="floating"  onIonChange={(e) => setFilterValue(e.target.value)} />
+                                </IonItem>
+                            </IonCol>
+                        </IonRow>
+                    </IonGrid>
                     <IonItem className="item-lines-none">
                         <IonButton type="submit" expand="block" fill="clear" style={{width: "100%"}}>
-                            <IonIcon icon={filterOutline} />&nbsp;Filter
+                            <IonIcon icon={filterOutline} />&nbsp;Apply Filter
                         </IonButton>
                     </IonItem>
                 </form>

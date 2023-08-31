@@ -28,9 +28,18 @@ export interface IItem {
     edit_timestamp: string;
     details: string | null;
 }
+
+export interface IStep {
+    id: number;
+    title: string;
+    done: boolean;
+    item: number;
+}
+
 // axios.post(`${apiUrl}add/sapp_todo/list/`, {name: "Main List", default: true}, getAxiosConf())
 export const getLists = async () => (await axios.get(`${apiUrl}list/sapp_todo/list/`, getAxiosConf())).data.page as IList[]
 export const getList = async (id: number|string) => ((await axios.get(`${apiUrl}detail/sapp_todo/list/${id}/`, getAxiosConf())).data as {instance: IList})
+
 export const getDefaultList = async (): Promise<IList> => {
     const defaultList = ((await axios.get(`${apiUrl}list/sapp_todo/list/?default=True&submit=Apply`, getAxiosConf())).data.page as IList[]).at(0)
     if (!defaultList) {
@@ -39,6 +48,110 @@ export const getDefaultList = async (): Promise<IList> => {
     }
     return defaultList
 }
+
 export const getItems = async (qs: string = "") => (await axios.get(`${apiUrl}list/sapp_todo/item/${qs}`, getAxiosConf())).data.page as IItem[]
 export const getSortedItems = async (qs: string = "") => sortBy(await (await axios.get(`${apiUrl}list/sapp_todo/item/${qs}`, getAxiosConf())).data.page as IItem[], "edit_timestamp", -1)
-export const updateAttr = async (model: string, id: string|number, attr: string, value: any) => (await axios.post(`${apiUrl}method/sapp_todo/${model}/update_attr/`, {id, attr, value}, getAxiosConf())).data
+
+export const updateAttr = async (model: string, id: string|number, attr: string, value: any) => (
+    await axios.post(`${apiUrl}method/sapp_todo/${model}/update_field/`, {id, attr, value}, getAxiosConf())
+).data
+
+interface IModel {
+    name: string;
+    app_label: string;
+    icon: string;
+}
+
+export interface WidgetAtts {
+    maxlength: string
+  }
+
+interface IFormField  {
+  field: string
+  label: string
+  value: string | number | null
+  widget_atts: WidgetAtts
+  required: boolean
+  widget: "NumberInput" | "DateInput" | "Select" | "TextInput" | "TinyMCE"
+  css_class: string
+  type: string
+  errors: any
+  choices: null | [number|string, string][]
+}
+
+interface IFieldError {
+    message: string
+    code: string
+}
+
+interface IFormAttrs {
+    string: string
+}
+
+interface IForm {
+    fields: {string: IFormField}
+    errors: {string: IFieldError[]}
+    attrs: IFormAttrs
+}
+
+
+interface IListResponseData <T> {
+    count: number;
+    page: T[];
+}
+
+interface IAddEditResponseData {
+    id?: number;
+    form?: IForm;
+    model?: IModel
+}
+
+export class TodoService {
+    /**
+     * update field
+     */
+    public static async updateField (module: string, model: string, id: string|number, field: string, value: any) {
+        return (
+            await axios.post(`${apiUrl}method/${module}/${model}/update_field/`, {id, field, value}, getAxiosConf())
+        ).data
+    }
+
+    /**
+     * delete instance
+     */
+    public static async deleteInstance (module: string, model: string, id: number) {
+        return (
+            await axios.get(`${apiUrl}delete/${module}/${model}/${id}/`, getAxiosConf())
+        ).data
+    }
+
+    /**
+     * get instance
+     */
+    public static async detailInstance <T>(module: string, model: string, id: number) {
+        return (
+            await axios.get(`${apiUrl}details/${module}/${model}/${id}/`, getAxiosConf())
+        ).data as T
+    }
+
+    /**
+     * get instances
+     */
+    public static async listInstances <T>(module: string, model: string, queryString: string = "") {
+        return (
+            await axios.get(`${apiUrl}list/${module}/${model}/${queryString}`, getAxiosConf())
+        ).data as IListResponseData<T>
+    }
+
+    /**
+     * post instances
+     */
+    public static async createEditInstance (module: string, model: string, data:any=null, id:number = 0, queryString: string = "") {
+        const action = id ? "edit" : "add"
+        const url = `${apiUrl}${action}/${module}/${model}/${id && `${id}/` || ''}${queryString}`
+        const conf = getAxiosConf()
+        return (
+            await (data ? axios.post(url, data, conf) : axios.get(url, conf))
+        ).data as IAddEditResponseData
+    }
+}

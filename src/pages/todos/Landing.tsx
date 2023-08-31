@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { IItem, IList, getDefaultList, getSortedItems } from "../../data/todos"
-import { IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, useIonAlert, useIonRouter } from "@ionic/react"
+import { IonAvatar, IonButton, IonButtons, IonChip, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, isPlatform, useIonAlert, useIonRouter } from "@ionic/react"
 import { Item, ItemForm } from "./Items"
 import { libraryOutline, logOutOutline, searchOutline, settingsOutline, starOutline, sunnyOutline } from "ionicons/icons"
 import { AuthCtx } from "../../contexts/AuthCtx"

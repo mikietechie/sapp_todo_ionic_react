@@ -1,0 +1,7 @@
+.line-through {
+    text-decoration: line-through;
+}
+ion-modal ion-content::part(scroll) {
+    overflow-y: var(--overflow);
+    overscroll-behavior-y: contain;
+}
