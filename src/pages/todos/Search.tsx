@@ -52,7 +52,7 @@ export const SearchPage: React.FC<{}> = () => {
                             </IonCol>
                             <IonCol sizeMd="8" size="12">
                                 <IonItem>
-                                    <IonInput label={`ITEM ${fmtFilterBy(filterBy)}`} minlength={3} labelPlacement="floating"  onIonChange={(e) => setFilterValue(e.target.value)} />
+                                    <IonInput label={`ITEM ${fmtFilterBy(filterBy)}`} required={true} minlength={3} labelPlacement="floating"  onIonChange={(e) => setFilterValue(e.target.value)} />
                                 </IonItem>
                             </IonCol>
                         </IonRow>
@@ -63,7 +63,7 @@ export const SearchPage: React.FC<{}> = () => {
                         </IonButton>
                     </IonItem>
                 </form>
-                <IonList>
+                <IonList className="pb-32">
                     {
                         items.map((item, index) => <Item onUpdate={submitFilters} key={index} item={item} />)
                     }

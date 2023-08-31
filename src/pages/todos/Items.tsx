@@ -79,6 +79,7 @@ interface IItemDetailsModalProps {
 
 const ItemDetailsModal: React.FC<IItemDetailsModalProps> = ({ onDismiss, item}) => {
     const inputRef = useRef<HTMLIonInputElement>(null)
+    console.log(item);
     return (
         <IonPage>
             <IonHeader>
@@ -124,7 +125,10 @@ const ItemDetailsModal: React.FC<IItemDetailsModalProps> = ({ onDismiss, item}) 
                             </IonSelect>
                         </IonItem>
                         <IonItem>
-                            <IonInput type="date" label="Date" labelPlacement="floating" value={item.date || ""} />
+                            <IonInput type="date" label="Date" labelPlacement="floating" value={item.date || ""}  onIonChange={(e) => TodoService.updateField("sapp_todo", "item", item.id, "date", e.target.value)}/>
+                        </IonItem>
+                        <IonItem>
+                            <IonInput type="datetime-local" label="Remind Me" labelPlacement="floating" value={item.remind_at?.slice(0,-1) || ""}  onIonChange={(e) => TodoService.updateField("sapp_todo", "item", item.id, "remind_at", e.target.value)}/>
                         </IonItem>
                         <IonItem lines="none">
                             <IonTextarea 
@@ -184,7 +188,7 @@ export const Item: React.FC<{ item: IItem, onUpdate: () => void }> = ({ item, on
                     <IonIcon icon={item.done ? checkmarkDoneOutline : checkmark} />
                 </IonButton>
                 <IonLabel color={item.important ? "warning" : "dark"}>
-                    <h2 className="ion-text-wrap" style={{ textDecoration: item.done ? "line-through" : "auto" }}>
+                    <h2 className={`ion-text-wrap ${item.done ? 'line-through' : ''}`}>
                         {item.subject}
                     </h2>
                     <p className="ion-text-wrap">

@@ -160,7 +160,7 @@ export const ListPage: React.FC<{}> = () => {
                 <IonRefresher slot="fixed" onIonRefresh={refresh}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
-                <IonList>
+                <IonList className="pb-32">
                     {
                         list && <ItemForm itemsUpdated={loadItems} data={{ list: list }} /> || <></>
                     }

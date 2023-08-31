@@ -23,6 +23,7 @@ export interface IItem {
     done: boolean;
     important: boolean;
     date: string | null;
+    remind_at: string | null;
     priority: "Highest" | "High" | "Medium" | "Low" | "Lowest";
     creation_timestamp: string;
     edit_timestamp: string;

@@ -1,27 +1,18 @@
 import { useEffect, useState } from "react"
-import { IItem, IList,  getDefaultList, getSortedItems } from "../../data/todos"
+import { IItem, getSortedItems } from "../../data/todos"
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonIcon, IonList, IonRefresher, IonRefresherContent, IonTitle, IonToolbar } from "@ionic/react"
-import { Item, ItemForm } from "./Items"
-import { starOutline } from "ionicons/icons"
+import { Item } from "./Items"
+import { alarmOutline } from "ionicons/icons"
 
-export const ImportantPage: React.FC<{}> = () => {
+export const OverduePage: React.FC<{}> = () => {
     const [items, setItems] = useState<IItem[]>([])
-    const [defaultList, setDefaultList] = useState<IList>()
-
-    useEffect(() => {
-        loadDefaultList()
-    }, [])
 
     useEffect(() => {
         loadItems()
     }, [])
 
-    const loadDefaultList = async () => {
-        setDefaultList(await getDefaultList())
-    }
-
     const loadItems = async () => {
-        setItems(await getSortedItems(`?submit=Apply&important=True&done=False`))
+        setItems(await getSortedItems(`?submit=Apply&done=False&date__lte=${(new Date).toJSON().slice(0,10)}`))
     }
 
     const refresh = async (e: CustomEvent) => {
@@ -37,8 +28,8 @@ export const ImportantPage: React.FC<{}> = () => {
                         <IonBackButton defaultHref="/home"></IonBackButton>
                     </IonButtons>
                     <IonTitle>
-                        <IonIcon icon={starOutline} className="ion-align-self-center" />&nbsp;
-                        Important
+                        <IonIcon icon={alarmOutline} className="ion-align-self-center" />&nbsp;
+                        Overdue
                     </IonTitle>
                 </IonToolbar>
             </IonHeader>
@@ -47,9 +38,6 @@ export const ImportantPage: React.FC<{}> = () => {
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
                 <IonList className="pb-32">
-                    {
-                        defaultList && <ItemForm itemsUpdated={loadItems} data={{list: defaultList, important: true}} /> || <></>
-                    }
                     {
                         items.map((item, index) => <Item onUpdate={loadItems} key={index} item={item} />)
                     }

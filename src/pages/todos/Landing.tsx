@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { IItem, IList, getDefaultList, getSortedItems } from "../../data/todos"
 import { IonAvatar, IonButton, IonButtons, IonChip, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, isPlatform, useIonAlert, useIonRouter } from "@ionic/react"
 import { Item, ItemForm } from "./Items"
-import { libraryOutline, logOutOutline, searchOutline, settingsOutline, starOutline, sunnyOutline } from "ionicons/icons"
+import { alarmOutline, alertOutline, libraryOutline, logOutOutline, searchOutline, settingsOutline, starOutline, sunnyOutline } from "ionicons/icons"
 import { AuthCtx } from "../../contexts/AuthCtx"
 import { apiUrl, getAxiosConf } from "../../data/common"
 import axios from "axios"
@@ -70,6 +70,9 @@ export const LandingPage: React.FC<{}> = ({ }) => {
                         <IonButton fill="clear" size="small" routerLink="/important">
                             <IonIcon icon={starOutline} />
                         </IonButton>
+                        <IonButton fill="clear" size="small" routerLink="/overdue">
+                            <IonIcon icon={alarmOutline} />
+                        </IonButton>
                         <IonButton fill="clear" size="small" routerLink="/settings">
                             <IonIcon icon={settingsOutline} />
                         </IonButton>
@@ -83,7 +86,7 @@ export const LandingPage: React.FC<{}> = ({ }) => {
                 <IonRefresher slot="fixed" onIonRefresh={refresh}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
-                <IonList>
+                <IonList className="pb-32">
                     {
                         defaultList && <ItemForm itemsUpdated={loadItems} data={{ list: defaultList, date: date }} /> || <></>
                     }

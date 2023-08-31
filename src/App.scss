@@ -5,3 +5,7 @@ ion-modal ion-content::part(scroll) {
     overflow-y: var(--overflow);
     overscroll-behavior-y: contain;
 }
+
+.pb-32 {
+    padding-bottom: 100px;
+}

@@ -12,6 +12,7 @@ import { SearchPage } from './Search';
 import { ImportantPage } from './Important';
 import { SettingsPage } from './Settings';
 import { AuthCtx } from '../../contexts/AuthCtx';
+import { OverduePage } from './Overdue';
 
 export const TodoIndexPage: React.FC = () => {
     const authCtx = useContext(AuthCtx)
@@ -34,6 +35,7 @@ export const TodoIndexPage: React.FC = () => {
                     <Route path="/search" render={() => <SearchPage />} exact={true} />
                     <Route path="/important" render={() => <ImportantPage />} exact={true} />
                     <Route path="/settings" render={() => <SettingsPage />} exact={true} />
+                    <Route path="/overdue" render={() => <OverduePage />} exact={true} />
                     <Route render={() => <Redirect to="/home" />} exact={true} />
                 </IonRouterOutlet>
 

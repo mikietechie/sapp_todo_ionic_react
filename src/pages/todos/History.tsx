@@ -37,7 +37,7 @@ export const HistoryPage: React.FC<{}> = () => {
                 <IonRefresher slot="fixed" onIonRefresh={refresh}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
-                <IonList>
+                <IonList className="pb-32">
                     {
                         items.map((item, index) => <Item onUpdate={loadItems} key={index} item={item} />)
                     }
