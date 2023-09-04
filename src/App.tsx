@@ -20,12 +20,14 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import './App.scss'
-import { TodoIndexPage } from './pages/todos/Index';
-import { useEffect, useState } from 'react';
+import TodoIndexPage from './pages/todos/Index';
+import { useEffect, useState, lazy } from 'react';
 import { AuthCtx, IAuthCTXUser } from './contexts/AuthCtx';
 import { AuthPage } from './pages/auth/auth';
 
 setupIonicReact();
+
+const Main = lazy(() => import('./pages/todos/Index'))
 
 const App: React.FC = () => {
     const [user, setUser] = useState<IAuthCTXUser | null>(null)
@@ -37,23 +39,13 @@ const App: React.FC = () => {
         }
     }, [])
 
-    useEffect(() => {
-        console.log(`user changed ${user?.username}`);
-        if (!user) {
-        }
-    }, [user])
-
-
     return (
         <IonApp>
             <IonReactRouter>
                 <AuthCtx.Provider value={{ setUser, user }}>
-                    <div>
-                    {
-                        !user ? <AuthPage /> : <TodoIndexPage />
-
-                    }
-                    </div>
+                {
+                    !user ? <AuthPage /> : <Main />
+                }
                 </AuthCtx.Provider>
             </IonReactRouter>
         </IonApp >

@@ -1,11 +1,10 @@
 
 import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar, useIonAlert, useIonRouter, useIonToast, useIonViewWillEnter } from '@ionic/react';
-import axios from 'axios';
-import { checkmarkDoneCircleOutline, logInOutline, logOutOutline, personAddOutline } from 'ionicons/icons';
-import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
+import { checkmarkDoneCircleOutline, logInOutline, personAddOutline } from 'ionicons/icons';
+import { FormEvent, useContext, useRef, useState } from 'react';
 import "./auth.scss"
-import { serverURL } from '../../data/common';
 import { AuthCtx } from '../../contexts/AuthCtx';
+import { SappService } from '../../data/services/sapp-service';
 
 export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}> = ({setPage}) => {
     const usernameRef = useRef<HTMLIonInputElement>(null)
@@ -21,26 +20,23 @@ export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}
         const [username, password] = [usernameRef.current?.value, passwordRef.current?.value]
         try {
             const payload = { username, password, password_confirmation: password }
-            const lres = await axios.post(`${serverURL}/auth/api/register/`, payload)
-            if (lres.status === 200) {
-                if ( lres.data?.id) {
-                    presentToast({message: `Hey ${username} good to have you, please proceed to login!`, duration: 1500, position: "bottom", buttons: ["Ok, Cool!"]})
-                    setPage("login")
-                    // localStorage.setItem('user', JSON.stringify(user))
-                    // authCtx?.setUser(user)
-                } else if (lres.data?.form?.errors) {
-                    let errorsStr = ""
-                    Object.entries(lres.data?.form?.errors).forEach(([field, errors]) => {
+            const data = await SappService.register(payload)
+            if (data.id) {
+                presentToast({message: `Hey ${username} good to have you, please proceed to login!`, duration: 1500, position: "bottom", buttons: ["Ok, Cool!"]})
+                localStorage.setItem('user', JSON.stringify(data))
+                authCtx?.setUser(data)
+                // setPage("login")
+            } else if (data?.form.errors) {
+                let errorsStr = ""
+                    Object.entries(data?.form?.errors).forEach(([field, errors]) => {
                         (errors as {message: string}[]).forEach(({message}) => {
                             errorsStr += " " + message
                         })
                     })
                     setDetail(errorsStr)
-                }
             }
         } catch (error: any) {
-            // console.log(error);
-            // setDetail(error?.response?.data?.detail || "An Error Occured")
+            setDetail(error?.response?.data?.detail || "An Error Occured")
         }
     }
 
@@ -57,7 +53,7 @@ export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}
             <IonContent className="ion-padding">
                 <IonGrid>
                     <IonRow className='ion-padding-top'>
-                        <IonCol sizeMd='4' offsetMd='4' sizeLg='4' offsetLg='3' sizeXl='3'>
+                        <IonCol sizeMd='6' offsetMd='2' sizeLg='5' offsetLg='2' sizeXl='4'>
                             <IonCard>
                                 <IonCardContent>
                                     <IonItem className="item-lines-none heading">

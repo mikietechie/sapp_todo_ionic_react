@@ -1,10 +1,10 @@
 import { IonIcon, IonItem, IonLabel, IonInput, IonButton, IonPage, IonHeader, IonToolbar, IonButtons, IonTitle, IonContent, useIonModal, IonSkeletonText, IonList, IonItemGroup, IonSelect, IonSelectOption, IonDatetimeButton, IonDatetime, IonModal, IonListHeader, IonTextarea, IonFooter, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle } from "@ionic/react";
 import { addCircle, addOutline, checkmark, checkmarkDoneOutline, checkmarkOutline, closeOutline, ellipsisVerticalOutline, pencilOutline, pulseOutline, starOutline, todayOutline,  trashBinOutline } from "ionicons/icons";
-import { IItem, IList, IStep, TodoService, fmtDate, fmtDateJSON, fmtDateTime } from "../../data/todos";
-import axios from "axios";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
-import { apiUrl, getAxiosConf } from "../../data/common";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
+import { IItem, IList, IStep } from "../../data/structs/todo";
+import { fmtDate, fmtDateJSON, fmtDateTime } from "../../data/functions/filters";
+import { SappService } from "../../data/services/sapp-service";
 
 
 const ItemSteps: React.FC<{item: IItem}> = ({item}) => {
@@ -16,25 +16,25 @@ const ItemSteps: React.FC<{item: IItem}> = ({item}) => {
     }, [])
 
     const loadSteps = async () => {
-        setSteps((await TodoService.listInstances<IStep>("sapp_todo", "step", `?submit=Apply&item=${item.id}`)).page)
+        setSteps((await SappService.listInstances<IStep>("sapp_todo", "step", `?submit=Apply&item=${item.id}`)).page)
     }
 
     const submitForm = async (e: React.FormEvent) => {
         e.preventDefault()
         const title = inputRef.current?.value
         if (!title) return
-        await TodoService.createEditInstance("sapp_todo", "step", {title, item: item.id})
+        await SappService.createEditInstance("sapp_todo", "step", {title, item: item.id})
         inputRef.current.value = ""
         await loadSteps()
     }
 
     const deleteStep = async (step: IStep) => {
-        await TodoService.deleteInstance("sapp_todo", "step", step.id)
+        await SappService.deleteInstance("sapp_todo", "step", step.id)
         await loadSteps()
     }
 
     const updateDone = async (step: IStep) => {
-        await TodoService.updateField("sapp_todo", "step", step.id, "done", !step.done)
+        await SappService.updateField("sapp_todo", "step", step.id, "done", !step.done)
         await loadSteps()
     }
 
@@ -79,7 +79,7 @@ interface IItemDetailsModalProps {
 
 const ItemDetailsModal: React.FC<IItemDetailsModalProps> = ({ onDismiss, item}) => {
     const inputRef = useRef<HTMLIonInputElement>(null)
-    console.log(item);
+    
     return (
         <IonPage>
             <IonHeader>
@@ -118,21 +118,21 @@ const ItemDetailsModal: React.FC<IItemDetailsModalProps> = ({ onDismiss, item}) 
                             </IonLabel>
                         </IonItem>
                         <IonItem>
-                            <IonSelect label="Priority" value={item.priority} labelPlacement="floating" interface="popover" onIonChange={(e) => TodoService.updateField("sapp_todo", "item", item.id, "priority", e.target.value)}>
+                            <IonSelect label="Priority" value={item.priority} labelPlacement="floating" interface="popover" onIonChange={(e) => SappService.updateField("sapp_todo", "item", item.id, "priority", e.target.value)}>
                                 {
                                     ["Medium", "Highest", "High", "Low", "Lowest"].map((v, index) => <IonSelectOption value={v} key={index}>{v}</IonSelectOption>)
                                 }
                             </IonSelect>
                         </IonItem>
                         <IonItem>
-                            <IonInput type="date" label="Date" labelPlacement="floating" value={item.date || ""}  onIonChange={(e) => TodoService.updateField("sapp_todo", "item", item.id, "date", e.target.value)}/>
+                            <IonInput type="date" label="Date" labelPlacement="floating" value={item.date || ""}  onIonChange={(e) => SappService.updateField("sapp_todo", "item", item.id, "date", e.target.value)}/>
                         </IonItem>
                         <IonItem>
-                            <IonInput type="datetime-local" label="Remind Me" labelPlacement="floating" value={item.remind_at?.slice(0,-1) || ""}  onIonChange={(e) => TodoService.updateField("sapp_todo", "item", item.id, "remind_at", e.target.value)}/>
+                            <IonInput type="datetime-local" label="Remind Me" labelPlacement="floating" value={item.remind_at?.slice(0,-1) || ""}  onIonChange={(e) => SappService.updateField("sapp_todo", "item", item.id, "remind_at", e.target.value)}/>
                         </IonItem>
                         <IonItem lines="none">
                             <IonTextarea 
-                            onIonBlur={(e) => TodoService.updateField("sapp_todo", "item", item.id, "details", e.target.value)}
+                            onIonChange={(e) => SappService.updateField("sapp_todo", "item", item.id, "details", e.target.value)}
                             label="Notes" maxlength={512} labelPlacement="stacked" autoGrow={true}
                             counter={true} value={item.details || ""}></IonTextarea>
                         </IonItem>
@@ -152,14 +152,14 @@ export const Item: React.FC<{ item: IItem, onUpdate: () => void }> = ({ item, on
     })
 
     const updateAttr = async (field: string, value: any, refresh: boolean = true) => {
-        await TodoService.updateField("sapp_todo", "item", item!.id, field, value)
+        await SappService.updateField("sapp_todo", "item", item!.id, field, value)
         if (refresh) {
             onUpdate()
         }
     }
 
     const deleteItem = async () => {
-        const res = await axios.get(`${apiUrl}delete/sapp_todo/item/${item.id}/`, getAxiosConf())
+        await SappService.deleteInstance("sapp_todo", "item", item.id)
         onUpdate()
     }
 
@@ -226,12 +226,8 @@ export const ItemForm: React.FC<{ itemsUpdated: () => void, data: {list: IList, 
 
     const submitForm = async (e: FormEvent) => {
         e.preventDefault()
-        const res = await axios.post(
-            `${apiUrl}add/sapp_todo/item/`,
-            { subject, default: true, list: data.list.id, date: data?.date || null, important: data?.important || false },
-            getAxiosConf()
-        )
-        if (res.data?.id) {
+        const res = await SappService.createEditInstance("sapp_todo", "item", { subject, default: true, list: data.list.id, date: data?.date || null, important: data?.important || false })
+        if (res?.id) {
             setSubject("")
             itemsUpdated()
         }

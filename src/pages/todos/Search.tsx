@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
-import { IItem, getSortedItems } from "../../data/todos"
-import axios from "axios"
 import { IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonList,  IonRow,  IonSelect, IonSelectOption, IonTitle, IonToolbar } from "@ionic/react"
 import { Item } from "./Items"
 import { filterOutline, searchOutline } from "ionicons/icons"
+import { IItem } from "../../data/structs/todo"
+import { TodoService } from "../../data/services/todo-service"
 
 
 const filterByOptions = ["subject__icontains", "details__icontains"] as const
@@ -20,8 +20,7 @@ export const SearchPage: React.FC<{}> = () => {
 
     const submitFilters = async (e: any = null) => {
         e?.preventDefault()
-        // Process Filters
-        setItems(await getSortedItems(`?submit=Apply&${filterBy}=${filterValue}`))
+        setItems(await TodoService.getSortedItems(`?submit=Apply&${filterBy}=${filterValue}`))
     }
 
     return (
@@ -52,7 +51,7 @@ export const SearchPage: React.FC<{}> = () => {
                             </IonCol>
                             <IonCol sizeMd="8" size="12">
                                 <IonItem>
-                                    <IonInput label={`ITEM ${fmtFilterBy(filterBy)}`} required={true} minlength={3} labelPlacement="floating"  onIonChange={(e) => setFilterValue(e.target.value)} />
+                                    <IonInput label={`ITEM ${fmtFilterBy(filterBy)}`} required={true} minlength={3} labelPlacement="floating" onIonInput={(e) => setFilterValue(e.target.value)} />
                                 </IonItem>
                             </IonCol>
                         </IonRow>

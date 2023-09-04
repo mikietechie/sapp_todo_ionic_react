@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react"
-import { IItem, IList, TodoService, getList, getSortedItems } from "../../data/todos"
-import axios from "axios"
 import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonList, IonPage, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, useIonActionSheet, useIonModal, useIonRouter, useIonToast } from "@ionic/react"
 import { Item, ItemForm } from "./Items"
 import { useParams } from "react-router"
 import { listOutline } from "ionicons/icons"
-import { apiUrl, getAxiosConf } from "../../data/common"
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces"
+import { IItem, IList } from "../../data/structs/todo"
+import { TodoService } from "../../data/services/todo-service"
+import { SappService } from "../../data/services/sapp-service"
 
 const RenameListModal: React.FC<{ onDismiss: any }> = ({ onDismiss, }: { onDismiss: (data?: string | null | undefined | number, role?: string) => void }) => {
     const inputRef = useRef<HTMLIonInputElement>(null)
@@ -56,11 +56,11 @@ export const ListPage: React.FC<{}> = () => {
     }, [])
 
     const loadList = async () => {
-        setList((await getList(listID)).instance)
+        setList((await TodoService.getList(listID)).instance)
     }
 
     const loadItems = async () => {
-        setItems(await getSortedItems(`?submit=Apply&done=${pendingOnly ? 'False' : ''}&list=${listID}`))
+        setItems(await TodoService.getSortedItems(`?submit=Apply&done=${pendingOnly ? 'False' : ''}&list=${listID}`))
     }
 
     const refresh = async (e: CustomEvent) => {
@@ -109,8 +109,7 @@ export const ListPage: React.FC<{}> = () => {
                 const action = detail?.data?.action
                 switch (action) {
                     case "delete":
-                        await axios.get(`${apiUrl}delete/sapp_todo/list/${list?.id}/`, getAxiosConf())
-                        await TodoService.deleteInstance("sapp_todo", "list", list!.id)
+                        await SappService.deleteInstance("sapp_todo", "list", list!.id)
                         presentToast({ message: `List deleted!`, duration: 1500, buttons: ["Ok, noted!"], color: "danger" })
                         router.push("/lists")
                         break;
@@ -120,7 +119,7 @@ export const ListPage: React.FC<{}> = () => {
                                 if (ev.detail.role === 'confirm') {
                                     const name:string = ev.detail.data
                                     if (!name) return
-                                    await TodoService.updateField("sapp_todo", "list", list!.id, "name", name)
+                                    await SappService.updateField("sapp_todo", "list", list!.id, "name", name)
                                     await loadList()
                                 }
                             },
@@ -129,11 +128,11 @@ export const ListPage: React.FC<{}> = () => {
                         })
                         break;
                     case "default":
-                        await TodoService.updateField("sapp_todo", "list", list!.id, "default", true)
+                        await SappService.updateField("sapp_todo", "list", list!.id, "default", true)
                         await loadList()
                         break;
                     case "archived":
-                        await TodoService.updateField("sapp_todo", "list", list!.id, "archived", true)
+                        await SappService.updateField("sapp_todo", "list", list!.id, "archived", true)
                         await loadList()
                         break;
                     default:

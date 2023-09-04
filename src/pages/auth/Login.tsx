@@ -1,11 +1,10 @@
 
 import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import axios from 'axios';
 import { checkmarkDoneCircleOutline, logInOutline, personAddOutline } from 'ionicons/icons';
 import { FormEvent, useContext, useRef, useState } from 'react';
 import "./auth.scss"
-import { serverURL } from '../../data/common';
 import { AuthCtx } from '../../contexts/AuthCtx';
+import { SappService } from '../../data/services/sapp-service';
 
 export const LoginPage: React.FC<{setPage: (p: "login" | "register") => void}> = ({setPage}) => {
     const usernameRef = useRef<HTMLIonInputElement>(null)
@@ -17,23 +16,11 @@ export const LoginPage: React.FC<{setPage: (p: "login" | "register") => void}> =
     const submitForm = async (e: FormEvent) => {
         e.preventDefault()
         try {
-            const payload = { username: usernameRef.current?.value, password: passwordRef.current?.value }
-            const lres = await axios.post(`${serverURL}auth/api/login/`, payload)
-            if (lres.status === 200) {
-                const ures = await axios.get(`${serverURL}auth/api/session/`, {
-                    headers: {
-                        Authorization: `Bearer ${lres.data.access}`
-                    }
-                })
-                if (ures.status === 200) {
-                    const user = ures.data
-                    user.tokens = lres.data
-                    localStorage.setItem('user', JSON.stringify(user))
-                    authCtx?.setUser(user)
-                }
-            }
+            const token = await SappService.login({ username: usernameRef.current?.value, password: passwordRef.current?.value })
+            const user = await SappService.getSessionUser({headers: {Authorization: `Bearer ${token.access}`}})
+            localStorage.setItem('user', JSON.stringify({...user, token}))
+            authCtx?.setUser(user)
         } catch (error: any) {
-            console.log(error);
             setError(error)
             setDetail(error?.response?.data?.detail || "An Error Occured")
         }

@@ -1,9 +1,9 @@
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonRefresherContent, IonList, IonIcon, useIonViewDidEnter, IonItem, IonLabel, IonInput, InputCustomEvent, InputChangeEventDetail, IonButtons, IonBackButton } from "@ionic/react";
 import { addCircle, listCircle, listOutline } from "ionicons/icons";
-import { IList, getLists } from "../../data/todos";
-import axios from "axios";
 import React, { FormEvent, useEffect, useState } from "react";
-import { apiUrl, getAxiosConf } from "../../data/common";
+import { IList } from "../../data/structs/todo";
+import { TodoService } from "../../data/services/todo-service";
+import { SappService } from "../../data/services/sapp-service";
 
 export const List: React.FC<{list: IList}> = ({list}) => {
     return (
@@ -22,8 +22,8 @@ export const ListForm: React.FC<{listsUpdated: () => void}> = ({listsUpdated}) =
 
     const submitForm = async (e: FormEvent) => {
         e.preventDefault()
-        const res = await axios.post(`${apiUrl}add/sapp_todo/list/`, {name, default: true}, getAxiosConf())
-        if (res.data?.id) {
+        const res = await SappService.createEditInstance("sapp_todo", "list", {name, default: true})
+        if (res.id) {
             setName("")
             listsUpdated()
         }
@@ -51,7 +51,7 @@ export const ListsPage: React.FC<{}> = () => {
     }, [])
 
     const loadLists = () => {
-        return getLists().then((listsArr) => setLists(listsArr))
+        return TodoService.getLists().then((listsArr) => setLists(listsArr))
     }
 
     const refresh = (e: CustomEvent) => {

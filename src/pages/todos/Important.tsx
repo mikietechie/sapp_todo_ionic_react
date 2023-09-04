@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { IItem, IList,  getDefaultList, getSortedItems } from "../../data/todos"
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonIcon, IonList, IonRefresher, IonRefresherContent, IonTitle, IonToolbar } from "@ionic/react"
 import { Item, ItemForm } from "./Items"
 import { starOutline } from "ionicons/icons"
+import { IItem, IList } from "../../data/structs/todo"
+import { TodoService } from "../../data/services/todo-service"
 
 export const ImportantPage: React.FC<{}> = () => {
     const [items, setItems] = useState<IItem[]>([])
@@ -17,11 +18,11 @@ export const ImportantPage: React.FC<{}> = () => {
     }, [])
 
     const loadDefaultList = async () => {
-        setDefaultList(await getDefaultList())
+        setDefaultList(await TodoService.getDefaultList())
     }
 
     const loadItems = async () => {
-        setItems(await getSortedItems(`?submit=Apply&important=True&done=False`))
+        setItems(await TodoService.getSortedItems(`?submit=Apply&important=True&done=False`))
     }
 
     const refresh = async (e: CustomEvent) => {

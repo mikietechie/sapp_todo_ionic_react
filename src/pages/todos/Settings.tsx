@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
-import { IList, getLists,  updateAttr } from "../../data/todos"
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonRefresher, IonRefresherContent, IonSelect, IonSelectOption, IonTitle, IonToolbar } from "@ionic/react"
 import { settingsOutline } from "ionicons/icons"
+import { TodoService } from "../../data/services/todo-service"
+import { SappService } from "../../data/services/sapp-service"
+import { IList } from "../../data/structs/todo"
 
 export const SettingsPage: React.FC<{}> = () => {
     const [lists, setLists] = useState<IList[]>([])
@@ -11,7 +13,7 @@ export const SettingsPage: React.FC<{}> = () => {
     }, [])
 
     const loadLists = () => {
-        return getLists().then((listsArr) => setLists(listsArr))
+        return TodoService.getLists().then((listsArr) => setLists(listsArr))
     }
 
     const refresh = (e: CustomEvent) => {
@@ -21,7 +23,7 @@ export const SettingsPage: React.FC<{}> = () => {
 
     const updateDefaultList = async (id: number|string) =>  {
         if (id) {
-            await updateAttr("list", id, "default", true)
+            await SappService.updateField("sapp_todo", "list", id, "default", true)
             await loadLists()
         }
     }

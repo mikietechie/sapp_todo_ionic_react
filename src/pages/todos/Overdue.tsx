@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { IItem, getSortedItems } from "../../data/todos"
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonIcon, IonList, IonRefresher, IonRefresherContent, IonTitle, IonToolbar } from "@ionic/react"
 import { Item } from "./Items"
 import { alarmOutline } from "ionicons/icons"
+import { TodoService } from "../../data/services/todo-service"
+import { IItem } from "../../data/structs/todo"
 
 export const OverduePage: React.FC<{}> = () => {
     const [items, setItems] = useState<IItem[]>([])
@@ -12,7 +13,7 @@ export const OverduePage: React.FC<{}> = () => {
     }, [])
 
     const loadItems = async () => {
-        setItems(await getSortedItems(`?submit=Apply&done=False&date__lte=${(new Date).toJSON().slice(0,10)}`))
+        setItems(await TodoService.getSortedItems(`?submit=Apply&done=False&date__lte=${(new Date).toJSON().slice(0,10)}`))
     }
 
     const refresh = async (e: CustomEvent) => {

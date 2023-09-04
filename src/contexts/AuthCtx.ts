@@ -16,7 +16,7 @@ export interface IAuthCTXUser {
     last_name: string | null;
     phone: string | null;
     role: string | null;
-    tokens?: IAuthCTXToken;
+    token?: IAuthCTXToken;
     username: string | null;
 }
 export interface AuthCtxType {

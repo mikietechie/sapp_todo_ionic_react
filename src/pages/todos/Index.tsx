@@ -4,7 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Route, Redirect } from 'react-router-dom';
 import { search, homeOutline, listOutline, libraryOutline, starOutline } from 'ionicons/icons';
 
-import { LandingPage } from './Landing';
+import { HomePage } from './Home';
 import { ListsPage } from './Lists';
 import { ListPage } from './List';
 import { HistoryPage } from './History';
@@ -14,7 +14,7 @@ import { SettingsPage } from './Settings';
 import { AuthCtx } from '../../contexts/AuthCtx';
 import { OverduePage } from './Overdue';
 
-export const TodoIndexPage: React.FC = () => {
+const TodoIndexPage: React.FC = () => {
     const authCtx = useContext(AuthCtx)
     const router = useIonRouter()
 
@@ -28,7 +28,7 @@ export const TodoIndexPage: React.FC = () => {
             <IonTabs>
                 <IonRouterOutlet>
                     <Redirect exact path="" to="/home" />
-                    <Route path="/home" render={() => <LandingPage />} exact={true} />
+                    <Route path="/home" render={() => <HomePage />} exact={true} />
                     <Route path="/list/:listID" render={() => <ListPage />} />
                     <Route path="/lists" render={() => <ListsPage  />} exact={true} />
                     <Route path="/history" render={() => <HistoryPage />} exact={true} />
@@ -70,3 +70,5 @@ export const TodoIndexPage: React.FC = () => {
         </IonReactRouter>
     );
 }
+
+export default TodoIndexPage

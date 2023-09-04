@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { IItem, getSortedItems } from "../../data/todos"
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonIcon, IonList, IonRefresher, IonRefresherContent, IonTitle, IonToolbar } from "@ionic/react"
 import { Item } from "./Items"
 import { libraryOutline } from "ionicons/icons"
+import { IItem } from "../../data/structs/todo"
+import { TodoService } from "../../data/services/todo-service"
 
 export const HistoryPage: React.FC<{}> = () => {
     const [items, setItems] = useState<IItem[]>([])
@@ -12,7 +13,7 @@ export const HistoryPage: React.FC<{}> = () => {
     }, [])
 
     const loadItems = async () => {
-        setItems(await getSortedItems(`?submit=Apply&done=True`))
+        setItems(await TodoService.getSortedItems(`?submit=Apply&done=True`))
     }
 
     const refresh = async (e: CustomEvent) => {

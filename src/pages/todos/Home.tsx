@@ -1,14 +1,13 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { IItem, IList, getDefaultList, getSortedItems } from "../../data/todos"
-import { IonAvatar, IonButton, IonButtons, IonChip, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, isPlatform, useIonAlert, useIonRouter } from "@ionic/react"
+import { IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonRefresher, IonRefresherContent, IonTitle, IonToolbar} from "@ionic/react"
 import { Item, ItemForm } from "./Items"
-import { alarmOutline, alertOutline, libraryOutline, logOutOutline, searchOutline, settingsOutline, starOutline, sunnyOutline } from "ionicons/icons"
+import { alarmOutline, libraryOutline, logOutOutline, searchOutline, settingsOutline, starOutline, sunnyOutline } from "ionicons/icons"
 import { AuthCtx } from "../../contexts/AuthCtx"
-import { apiUrl, getAxiosConf } from "../../data/common"
-import axios from "axios"
+import { IItem, IList } from "../../data/structs/todo"
+import { TodoService } from "../../data/services/todo-service"
 
 
-export const LandingPage: React.FC<{}> = ({ }) => {
+export const HomePage: React.FC<{}> = ({ }) => {
     const [items, setItems] = useState<IItem[]>([])
     const [defaultList, setDefaultList] = useState<IList>()
     const [date, setDate] = useState((new Date()).toJSON().slice(0, 10))
@@ -16,7 +15,7 @@ export const LandingPage: React.FC<{}> = ({ }) => {
     const authCtx = useContext(AuthCtx)
 
     useEffect(() => {
-        getDefaultList().then((o) => {
+        TodoService.getDefaultList().then((o) => {
             setDefaultList(o)
         })
     }, [])
@@ -26,7 +25,7 @@ export const LandingPage: React.FC<{}> = ({ }) => {
     }, [date])
 
     const loadItems = async () => {
-        setItems(await getSortedItems(`?submit=Apply&date=${date}`))
+        setItems(await TodoService.getSortedItems(`?submit=Apply&date=${date}`))
     }
 
     const refresh = async (e: CustomEvent) => {
