@@ -1,10 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonRefresher, IonRefresherContent, IonTitle, IonToolbar} from "@ionic/react"
 import { Item, ItemForm } from "./Items"
-import { alarmOutline, libraryOutline, logOutOutline, searchOutline, settingsOutline, starOutline, sunnyOutline } from "ionicons/icons"
+import { alarmOutline, appsOutline, libraryOutline, logOutOutline, searchOutline, settingsOutline, starOutline, sunnyOutline } from "ionicons/icons"
 import { AuthCtx } from "../../contexts/AuthCtx"
 import { IItem, IList } from "../../data/structs/todo"
 import { TodoService } from "../../data/services/todo-service"
+import { SpaceCtx } from "../../contexts/SpaceCtx"
 
 
 export const HomePage: React.FC<{}> = ({ }) => {
@@ -13,6 +14,7 @@ export const HomePage: React.FC<{}> = ({ }) => {
     const [date, setDate] = useState((new Date()).toJSON().slice(0, 10))
     const datePickerModal = useRef<HTMLIonModalElement>(null)
     const authCtx = useContext(AuthCtx)
+    const spaceCtx = useContext(SpaceCtx)
 
     useEffect(() => {
         TodoService.getDefaultList().then((o) => {
@@ -38,11 +40,6 @@ export const HomePage: React.FC<{}> = ({ }) => {
             setDate(v.slice(0, 10))
             datePickerModal.current?.dismiss()
         }
-    }
-
-    const logout = () => {
-        authCtx?.setUser(null)
-        localStorage.clear()
     }
 
     return (
@@ -75,8 +72,11 @@ export const HomePage: React.FC<{}> = ({ }) => {
                         <IonButton fill="clear" size="small" routerLink="/settings">
                             <IonIcon icon={settingsOutline} />
                         </IonButton>
-                        <IonButton fill="clear" size="small" onClick={logout} >
+                        <IonButton fill="clear" size="small" onClick={authCtx?.logout} >
                             <IonIcon icon={logOutOutline} />
+                        </IonButton>
+                        <IonButton fill="clear" size="small" onClick={() => spaceCtx?.setSpace("space")} >
+                            <IonIcon icon={appsOutline} />
                         </IonButton>
                     </IonButtons>
                 </IonToolbar>

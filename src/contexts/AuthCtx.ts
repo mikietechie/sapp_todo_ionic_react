@@ -22,6 +22,7 @@ export interface IAuthCTXUser {
 export interface AuthCtxType {
     user?: IAuthCTXUser | null;
     setUser: (u: any) => void;
+    logout: () => void;
 }
 
 export const AuthCtx = createContext<AuthCtxType | null>(null)

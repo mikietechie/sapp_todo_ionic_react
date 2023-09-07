@@ -1,4 +1,4 @@
-import { IonApp, setupIonicReact} from '@ionic/react';
+import { IonApp, IonLoading, setupIonicReact} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 /* Core CSS required for Ionic components to work properly */
@@ -21,17 +21,20 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './App.scss'
 import TodoIndexPage from './pages/todos/Index';
-import { useEffect, useState, lazy } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { AuthCtx, IAuthCTXUser } from './contexts/AuthCtx';
 import { AuthPage } from './pages/auth/auth';
+import { SPACE, SpaceCtx } from './contexts/SpaceCtx';
 
 setupIonicReact();
 
 const Todo = lazy(() => import('./pages/todos/Index'))
 const Blog = lazy(() => import('./pages/blog/Index'))
+const Space = lazy(() => import('./pages/Space'))
 
 const App: React.FC = () => {
     const [user, setUser] = useState<IAuthCTXUser | null>(null)
+    const [space, setSpace] = useState<SPACE>("space")
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user')
@@ -40,12 +43,31 @@ const App: React.FC = () => {
         }
     }, [])
 
+    const logout = () => {
+        localStorage.clear()
+        setUser(null)
+    }
+
+    const getSpace = () => {
+        switch (space) {
+            case "blog":
+                return <Blog />
+            case 'todo':
+                return <Todo />
+            default:
+                return <Space />
+        }
+    }
+
+
     return (
         <IonApp>
-            <AuthCtx.Provider value={{ setUser, user }}>
-            {
-                !user ? <AuthPage /> : <Blog />
-            }
+            <AuthCtx.Provider value={{ setUser, user, logout }}>
+                <SpaceCtx.Provider value={{ setSpace, space }}>
+                {
+                    !user ? <AuthPage /> :  <Suspense fallback={<IonLoading />}>{getSpace()}</Suspense>
+                }
+                </SpaceCtx.Provider>
             </AuthCtx.Provider>
         </IonApp >
     )
