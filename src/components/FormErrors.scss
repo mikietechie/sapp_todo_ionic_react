@@ -1,0 +1,17 @@
+.form-errors {
+    color: var(--ion-color-danger);
+    * {
+        list-style: none !important;
+    }
+    ul {
+        padding-left: 10px;
+        ul {
+            padding-left: 10px;
+        }
+    }
+    li {
+        h5 {
+            margin: 4px 0px 4px;
+        }
+    }
+}

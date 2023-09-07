@@ -27,7 +27,8 @@ import { AuthPage } from './pages/auth/auth';
 
 setupIonicReact();
 
-const Main = lazy(() => import('./pages/todos/Index'))
+const Todo = lazy(() => import('./pages/todos/Index'))
+const Blog = lazy(() => import('./pages/blog/Index'))
 
 const App: React.FC = () => {
     const [user, setUser] = useState<IAuthCTXUser | null>(null)
@@ -41,13 +42,11 @@ const App: React.FC = () => {
 
     return (
         <IonApp>
-            <IonReactRouter>
-                <AuthCtx.Provider value={{ setUser, user }}>
-                {
-                    !user ? <AuthPage /> : <Main />
-                }
-                </AuthCtx.Provider>
-            </IonReactRouter>
+            <AuthCtx.Provider value={{ setUser, user }}>
+            {
+                !user ? <AuthPage /> : <Blog />
+            }
+            </AuthCtx.Provider>
         </IonApp >
     )
 }

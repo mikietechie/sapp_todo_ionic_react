@@ -47,7 +47,7 @@ export const ImportantPage: React.FC<{}> = () => {
                 <IonRefresher slot="fixed" onIonRefresh={refresh}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
-                <IonList className="pb-32">
+                <IonList className="pb-100">
                     {
                         defaultList && <ItemForm itemsUpdated={loadItems} data={{list: defaultList, important: true}} /> || <></>
                     }

@@ -60,7 +60,7 @@ export const RegisterPage: React.FC<{setPage: (p: "login" | "register") => void}
                                         <IonLabel className="ion-text-wrap">
                                             <h1 className="ion-text-center ion-margin-vertical">
                                                 <IonIcon icon={checkmarkDoneCircleOutline} slot='start' />&nbsp;
-                                                SAPP To Do
+                                                SAPP Space
                                             </h1>
                                             <p className="ion-text-center">
                                                 <IonNote>Good to have you :)</IonNote>

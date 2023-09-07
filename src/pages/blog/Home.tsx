@@ -1,0 +1,83 @@
+import { FormEvent, useContext, useEffect, useRef, useState } from "react"
+import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonList, IonRefresher, IonRefresherContent, IonSearchbar, IonTitle, IonToolbar} from "@ionic/react"
+import { bookmarkOutline, logOutOutline, pencilOutline, searchOutline, newspaperOutline } from "ionicons/icons"
+import { AuthCtx } from "../../contexts/AuthCtx"
+import { SappService } from "../../data/services/sapp-service"
+import { ICategory, IPost } from "./data/structs"
+import { PostSwiper } from "./components/PostSwiper"
+import { Category } from "./components/Category"
+
+
+export const HomePage: React.FC<{}> = ({ }) => {
+    const [categories, setCategories] = useState<ICategory[]>([])
+    const [posts, setPosts] = useState<IPost[]>([])
+    const [date, setDate] = useState((new Date()).toJSON().slice(0, 10))
+    const authCtx = useContext(AuthCtx)
+
+    useEffect(() => {
+        loadData()
+    }, [date])
+
+    const loadData = async () => {
+        setPosts((await SappService.listInstances<IPost>("sapp_blog", "post", "")).page)
+        setCategories((await SappService.listInstances<ICategory>("sapp_blog", "category")).page)
+    }
+
+    const refresh = async (e: CustomEvent) => {
+        await loadData()
+        e.detail.complete()
+    }
+
+    const logout = () => {
+        authCtx?.setUser(null)
+        localStorage.clear()
+    }
+
+    const onSearch = async (v: string | null | undefined) => {
+        if (!v) return
+        alert(v)
+    }
+
+    return (
+        <>
+            <IonHeader>
+                <IonToolbar>
+                    <IonTitle color="primary">
+                        <IonIcon icon={newspaperOutline} className="ion-align-self-center" />&nbsp;
+                        {authCtx?.user?.username?.toLocaleUpperCase()}'s Feed
+                    </IonTitle>
+                </IonToolbar>
+                <IonToolbar>
+                    <IonButtons className="ion-justify-content-center">
+                        <IonButton fill="clear" size="small" routerLink="/search">
+                            <IonIcon icon={searchOutline} />
+                        </IonButton>
+                        <IonButton fill="clear" size="small" routerLink="/overdue">
+                            <IonIcon icon={bookmarkOutline} />
+                        </IonButton>
+                        <IonButton fill="clear" size="small" routerLink="/settings">
+                            <IonIcon icon={pencilOutline} />
+                        </IonButton>
+                        <IonButton fill="clear" size="small" onClick={logout} >
+                            <IonIcon icon={logOutOutline} />
+                        </IonButton>
+                    </IonButtons>
+                </IonToolbar>
+                <IonToolbar>
+                    <IonSearchbar onIonChange={(e) => onSearch(e.target.value)}></IonSearchbar>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent className="ion-padding pb-150">
+                <IonRefresher slot="fixed" onIonRefresh={refresh}>
+                    <IonRefresherContent></IonRefresherContent>
+                </IonRefresher>
+                { posts.length ? <PostSwiper posts={posts} /> : "" }
+                <IonList>
+                    {
+                        categories.map((category, index) => <Category category={category} key={index} />)
+                    }
+                </IonList>
+            </IonContent>
+        </>
+    )
+}

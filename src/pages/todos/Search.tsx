@@ -62,7 +62,7 @@ export const SearchPage: React.FC<{}> = () => {
                         </IonButton>
                     </IonItem>
                 </form>
-                <IonList className="pb-32">
+                <IonList className="pb-100">
                     {
                         items.map((item, index) => <Item onUpdate={submitFilters} key={index} item={item} />)
                     }
