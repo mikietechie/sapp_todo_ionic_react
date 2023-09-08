@@ -1,0 +1,7 @@
+.timer-card {
+    border-radius: 16px;
+    --background: var(--ion-color-primary);
+    &,* {
+        color: #fff !important;
+    }
+}

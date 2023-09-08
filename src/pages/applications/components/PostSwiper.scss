@@ -1,0 +1,26 @@
+.swiper {
+    height: 200px;
+    .swiper-slide {
+        border-radius: 8px;
+        background-image: url("https://i.pinimg.com/236x/26/0c/12/260c125e305beedd26f7a4f6d72b0802.jpg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        .swiper-slide-content {
+            background-color: #000;
+            opacity: 0.5;
+            padding: 4px 4px 8px 16px;
+            border-radius: 8px;
+            width: 100%;
+            height: 100%;
+            justify-items: baseline;
+            display: flex;
+            a {
+                text-decoration: none !important;
+                color: #fff;
+                text-shadow: 2px 2px #000;
+                align-self: flex-end;
+            }
+        }
+    }
+}

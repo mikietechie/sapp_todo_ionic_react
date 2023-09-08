@@ -15,10 +15,10 @@ export const PostPage: React.FC<{}> = () => {
 
     useEffect(() => {
         if (!postID) router.goBack()
-        loadBlog()
+        loadPost()
     }, [])
 
-    const loadBlog = async () => {
+    const loadPost = async () => {
         setPost((await SappService.detailInstance<IPost>("sapp_blog", "post", parseInt(postID))).instance)
     }
 
