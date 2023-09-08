@@ -1,6 +1,6 @@
 
 import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonNote, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import { checkmarkDoneCircleOutline, logInOutline, personAddOutline } from 'ionicons/icons';
+import { atOutline, checkmarkDoneCircleOutline, logInOutline, personAddOutline } from 'ionicons/icons';
 import { FormEvent, useContext, useRef, useState } from 'react';
 import "./auth.scss"
 import { AuthCtx } from '../../contexts/AuthCtx';

@@ -30,7 +30,8 @@ setupIonicReact();
 
 const Todo = lazy(() => import('./pages/todos/Index'))
 const Blog = lazy(() => import('./pages/blog/Index'))
-const Space = lazy(() => import('./pages/Space'))
+const Applications = lazy(() => import('./pages/applications/Index'))
+const Space = lazy(() => import('./pages/space/Index'))
 
 const App: React.FC = () => {
     const [user, setUser] = useState<IAuthCTXUser | null>(null)
@@ -54,11 +55,12 @@ const App: React.FC = () => {
                 return <Blog />
             case 'todo':
                 return <Todo />
+            case "applications":
+                return <Applications />
             default:
                 return <Space />
         }
     }
-
 
     return (
         <IonApp>
